@@ -1,5 +1,4 @@
 import argparse
-import os
 
 from persistence.shelve_adapter import ShelveAdapter
 from services.file_service import FileService
@@ -8,10 +7,10 @@ from services.link_service import LinkService
 
 
 def main():
-    link_db_file_path = '/home/kmcvay/.symlink_manager/link_database'
-    persistence_adapter = ShelveAdapter(link_db_file_path)
+    link_db_dir = '/home/kmcvay/.symlink_manager/link_database'
+    persistence_adapter = ShelveAdapter(link_db_dir)
 
-    raw_command = parse_args().command
+    raw_command = parse_args()
     root_command = raw_command[0]
     if root_command == 'ln':
         link_service = LinkService(raw_command, persistence_adapter)

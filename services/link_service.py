@@ -1,6 +1,6 @@
-import os
+import subprocess
 
-from command_containers.ln_component_container import LinkCommandComponentContainer
+from command_containers.ln_container import LinkCommandComponentContainer
 from persistence.persistence_adapter import PersistenceAdapter
 
 
@@ -18,9 +18,12 @@ class LinkService:
 
         if (self.persistence_adapter.register_link(self.ln_container)):
             print('Creating the link!')
-            os.system(self.ln_container.full_command()) # TODO Use subprocess?
-            print('Link created!')
+            ln_status = subprocess.call(self.ln_container._raw_command_list)
+
+            if ln_status != 0:
+                print('Link creation failed.')
+                self.persistence_adapter.unregister_link(self.ln_container)
+            else:
+                print('Link created!')
         else:
             print('Could not register symlink in the database.')
-
-        pass

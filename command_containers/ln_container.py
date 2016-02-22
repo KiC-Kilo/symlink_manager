@@ -4,9 +4,8 @@ class LinkCommandComponentContainer:
         assert isinstance(ln_command, list)
         self._raw_command_list = ln_command
 
-        self.symbolic = \
-            ln_command.__contains__('-s') or \
-            ln_command.__contains__('--symbolic')
+        self.symbolic = ln_command.__contains__('-s') or \
+                        ln_command.__contains__('--symbolic')
 
         if not self.symbolic:
             raise Exception('This implementation only supports symlinks.')

@@ -6,29 +6,40 @@ from persistence.persistence_adapter import PersistenceAdapter
 
 class ShelveAdapter(PersistenceAdapter):
 
-    def __init__(self, ln_db_file_path):
-        self.ln_db_file_path = ln_db_file_path
+    def __init__(self, ln_db_dir):
+        self.ln_db_file_path = self.__create_link_db(ln_db_dir)
 
     def register_link(self, ln_container):
-        db = shelve.open(self.ln_db_file_path, writeback=True)
 
-        source = ln_container.source
-        target = ln_container.target
+        with shelve.open(self.ln_db_file_path, writeback=True) as db:
+            source = ln_container.source
+            target = ln_container.target
 
-        if not db.keys().__contains__(target):
-            db[target] = source
-            return True
-        else:
-            db[target].append(source)
-            return False
+            print(db.get(target))
 
-        pass
+            if not db.keys().__contains__(target):
+                db[target] = [source]
+            else:
+                db[target].append(source)
 
+            print(db.get(target))
 
-    def __create_link_db(self):
-        link_db_path = '/home/kmcvay/.symlink_manager/'
-        link_db_file = 'link_database'
-        if not os.path.exists(link_db_path):
-            os.makedirs(link_db_path)
+        return True
 
-        return link_db_path + link_db_file
+    def unregister_link(self, ln_container):
+
+        with shelve.open(self.ln_db_file_path, writeback=True) as db:
+            source = ln_container.source
+            target = ln_container.target
+
+            if db.get(target):
+                db.get(target).remove(source)
+
+        return True
+
+    def __create_link_db(self, ln_db_dir):
+        link_db_file = 'symlink_database'
+        if not os.path.exists(ln_db_dir):
+            os.makedirs(ln_db_dir)
+
+        return os.path.join(ln_db_dir, link_db_file)
