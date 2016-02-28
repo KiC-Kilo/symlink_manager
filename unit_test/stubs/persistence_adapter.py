@@ -1,7 +1,7 @@
 from persistence.persistence_adapter import PersistenceAdapter
 
 
-class StubbedPersistenceAdapter(PersistenceAdapter):
+class AlwaysSuccessfulPersistenceAdapter(PersistenceAdapter):
 
     def register_link(self, ln_container):
         return True

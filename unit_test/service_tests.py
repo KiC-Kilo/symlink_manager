@@ -3,33 +3,30 @@ import subprocess
 import tempfile
 import unittest
 
-from services.link_service import LinkService
-from unit_test.stubs.persistence_adapter import StubbedPersistenceAdapter
+from services.ln_service import LnService
+from unit_test.stubs.persistence_adapter import AlwaysSuccessfulPersistenceAdapter
+from util.test_utils import file_content_equals_string
 
 
 class LinkServiceTests(unittest.TestCase):
     def test_creates_symlink_with_valid_ln_command(self):
         # Arrange
-        # self.setup()
-        persistence_adapter = StubbedPersistenceAdapter()
+        persistence_adapter = AlwaysSuccessfulPersistenceAdapter()
 
         link_source = self.dummy_file_full_path()
         link_target = os.path.join(self.test_dir.name, 'link')
         ln_command = ['ln', '-s', link_source, link_target]
 
         # Act
-        link_service = LinkService(ln_command, persistence_adapter)
+        link_service = LnService(ln_command, persistence_adapter)
         link_service.create_link()
 
         dummy_file_content = 'foooooo bar'.encode('UTF8')
         self.test_file.write(dummy_file_content)
         self.test_file.flush()
-        linked_content = subprocess.Popen(['cat', link_target],
-                                          stdout=subprocess.PIPE,
-                                          stderr=subprocess.PIPE).communicate()[0]
-        # TODO ^^^ Iterate through file, cat is a hack.
-        # Assert
-        self.assertEqual(dummy_file_content, linked_content)
+        self.test_file.close()
+
+        assert(file_content_equals_string(link_target, dummy_file_content))
 
     def setUp(self):
         self.test_dir = tempfile.TemporaryDirectory()
