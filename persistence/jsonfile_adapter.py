@@ -18,7 +18,7 @@ class JsonFileAdapter(PersistenceAdapter):
 
             if not db.__contains__(target):
                 db[target] = [link]
-            else:
+            elif not db[target].__contains__(link):
                 db[target].append(link)
 
             self.__save_json_content(db)
@@ -28,19 +28,34 @@ class JsonFileAdapter(PersistenceAdapter):
         except Exception as e:
             return False
 
-    def unregister_link(self, ln_container):
+    def unregister_link(self, target_path, link_path):
         try:
             db = self.__load_json_content()
 
-            target = ln_container.target
+            if not db.__contains__(target_path):
+                raise Exception('No target `' + target_path +
+                                '`found in link database.')
 
-            if db.__contains__(target):
-                db.pop(target)
+            for link in db[target_path]:
+                if link == link_path:
+                    db[target_path].remove(link)
 
+            self.__save_json_content(db)
             return True
 
-        except Exception: return False
+        except Exception as e:
+            return False
 
+
+    def unregister_target(self, target_path):
+        try:
+            db = self.__load_json_content()
+
+            if db.__contains__(target_path):
+                db.pop(target_path)
+
+            return True
+        except Exception as e: return False
 
     def __load_json_content(self):
         try:
@@ -51,6 +66,9 @@ class JsonFileAdapter(PersistenceAdapter):
         except ValueError as e:
             return dict()
 
+    # TODO convert to decorator?
     def __save_json_content(self, content):
         with open(self._db_file_path, mode='w') as db_file:
             db_file.write(json.dumps(content, indent=4, separators=(',', ' : ')))
+
+

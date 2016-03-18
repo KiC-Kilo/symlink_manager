@@ -5,7 +5,6 @@ class LnCommand(ShellCommandContainer):
 
     def __init__(self, ln_command):
         super().__init__(ln_command)
-        self._raw_command = ln_command
 
         if not (ln_command.__contains__('-s') or
                 ln_command.__contains__('--symbolic')):

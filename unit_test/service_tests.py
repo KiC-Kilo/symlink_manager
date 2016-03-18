@@ -1,5 +1,4 @@
 import os
-import subprocess
 import tempfile
 import unittest
 
@@ -8,7 +7,7 @@ from unit_test.stubs.persistence_adapter import AlwaysSuccessfulPersistenceAdapt
 from util.test_utils import file_content_equals_string
 
 
-class LinkServiceTests(unittest.TestCase):
+class LnServiceTests(unittest.TestCase):
     def test_creates_symlink_with_valid_ln_command(self):
         # Arrange
         persistence_adapter = AlwaysSuccessfulPersistenceAdapter()
@@ -35,6 +34,7 @@ class LinkServiceTests(unittest.TestCase):
 
     def dummy_file_full_path(self):
         return os.path.join(self.test_dir.name, str(self.test_file.name))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -16,7 +16,7 @@ class LnService(CommandService):
 
     def create_link(self):
         ln_command = self.ln_container
-        if (self.persistence_adapter.register_link(ln_command)):
+        if self.persistence_adapter.register_link(ln_command):
             print('Creating link at ' + ln_command.link_name + ' to file '
                   + ln_command.target_name)
 
@@ -24,7 +24,9 @@ class LnService(CommandService):
 
             if ln_status != 0:
                 print('Link creation failed.')
-                self.persistence_adapter.unregister_link(self.ln_container)
+                self.persistence_adapter.unregister_link(
+                    self.ln_container.target_name,
+                    self.ln_container.link_name)
             else:
                 print('Link created!')
         else:

@@ -23,8 +23,8 @@ def main():
         link_service.create_link()
 
     elif root_command == 'mv':
-        file_service = MvService(raw_command, persistence_adapter)
-        file_service.move_file()    # TODO generalize these move_file and create_link calls
+        move_service = MvService(raw_command, persistence_adapter)
+        move_service.move_file()    # TODO generalize these move_file and create_link calls
                                     # in a superclass?
     elif root_command == 'rm':
         pass # TODO
