@@ -35,6 +35,12 @@ class LnServiceTests(unittest.TestCase):
     def dummy_file_full_path(self):
         return os.path.join(self.test_dir.name, str(self.test_file.name))
 
+class MvServiceTests(unittest.TestCase):
+    def test_updates_link_when_moving_target(self):
+        pass
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

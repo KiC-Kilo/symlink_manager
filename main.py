@@ -1,9 +1,8 @@
 import argparse
 
-from persistence.shelve_adapter import ShelveAdapter
+from persistence.jsonfile_adapter import JsonFileAdapter
 from services.mv_service import MvService
 from services.ln_service import LnService
-
 
 
 def main():
@@ -13,8 +12,8 @@ def main():
     TODO support other forms.
     :return:
     """
-    link_db_dir = '/home/kmcvay/.symlink_manager/link_database'
-    persistence_adapter = ShelveAdapter(link_db_dir)
+    link_db_dir = '~/.symlink_manager/link_database' # TODO find a real home for this.
+    persistence_adapter = JsonFileAdapter(link_db_dir)
 
     raw_command = parse_args()
     root_command = raw_command[0]
@@ -24,8 +23,7 @@ def main():
 
     elif root_command == 'mv':
         move_service = MvService(raw_command, persistence_adapter)
-        move_service.move_file()    # TODO generalize these move_file and create_link calls
-                                    # in a superclass?
+        move_service.execute_mv()
     elif root_command == 'rm':
         pass # TODO
     else:
