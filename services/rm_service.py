@@ -1,3 +1,5 @@
+import logging
+
 from services.command_service import CommandService
 from shell_command.rm_container import RmCommand
 
@@ -16,9 +18,9 @@ class RmService(CommandService):
         try:
             rm_command = self.rm_container
 
-            print('Attempting to unregister all links for file...')
+            logging.info('Attempting to unregister all links for file...')
             if self.persistence_adapter.unregister_target(rm_command.target):
-                print('File unregistered.')
+                logging.info('File unregistered.')
 
             return True
 
@@ -30,9 +32,9 @@ class RmService(CommandService):
         try:
             rm_command = self.rm_container
 
-            print('Attempting to unregister link...')
+            logging.info('Attempting to unregister link...')
             if self.persistence_adapter.unregister_target(rm_command.target):
-                print('Link unregistered.')
+                logging.info('Link unregistered.')
 
             return True
 

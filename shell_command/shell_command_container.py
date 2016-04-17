@@ -26,11 +26,17 @@ class ShellCommand(metaclass=ABCMeta):
 		return path
 
 	def __get_user_home_dir(self):
-		output, err = subprocess.Popen('whoami', stdout=subprocess.PIPE, shell=True).communicate()
-		if err is not None:
-			raise Exception('Error resolving home directory for current user.')
+		result = subprocess.run('whoami',
+								stdout=subprocess.PIPE,
+								stderr=subprocess.PIPE,
+								shell=True,
+								universal_newlines=True)
+		err = result.stderr
+		whoami = result.stdout.strip()
 
-		whoami = output.decode('UTF8').strip()
+		if err:
+			raise Exception('Error resolving home directory for current user: ' + err)
+
 		if whoami == 'root':
 			user_dir = '/root'
 		else:

@@ -1,3 +1,4 @@
+import logging
 import subprocess
 
 from services.command_service import CommandService
@@ -17,18 +18,18 @@ class LnService(CommandService):
     def create_link(self):
         ln_command = self.ln_container
         if self.persistence_adapter.register_link(ln_command):
-            print('Creating link at ' + ln_command.link_name + ' to file '
+            logging.info('Creating link at ' + ln_command.link_name + ' to file '
                   + ln_command.target_name)
 
-            ln_status = subprocess.call(self.ln_container._raw_command)
+            ln_status = subprocess.run(self.ln_container._raw_command).returncode
 
             if ln_status != 0:
-                print('Link creation failed.')
+                logging.error('Link creation failed.')
                 self.persistence_adapter.unregister_link(
                     self.ln_container.target_name,
                     self.ln_container.link_name)
             else:
-                print('Link created!')
+                logging.info('Link created!')
         else:
-            print('Could not register symlink in the database.')
+            logging.error('Could not register symlink in the database.')
 
