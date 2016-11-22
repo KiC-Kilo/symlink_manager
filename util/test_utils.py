@@ -14,6 +14,7 @@ def file_contents_equal(filepath_1, filepath_2):
 
             return content_1 == content_2
 
+
 def file_content_equals_string(filepath, string):
 
     with open(filepath, mode='rb') as file:

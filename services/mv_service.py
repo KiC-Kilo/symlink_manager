@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 
 from services.command_service import CommandService
@@ -21,33 +22,35 @@ class MvService(CommandService):
 		if _is_symlink(src):
 			self.__reregister_symlink(src, dest)
 		else:
-			self.__reregister_targetfile(src, dest)
+			self.__reregister_target_file(src, dest)
 
-		mv_result = subprocess.run(self.mv_command._raw_command,
+		mv_result = subprocess.run(self.mv_command.raw_command,
 								   stderr=subprocess.PIPE,
 								   universal_newlines=True,
 								   shell=True)
-
-		if mv_result.returncode != 0:
+		if mv_result.returncode:
 			logging.error('Error moving file: ' + mv_result.stderr)
-			# TODO revert the change in the db
+			self.persistence_adapter.rollback()
+		else:
+			self.persistence_adapter.commit()
 
 	def __reregister_symlink(self, src, dest):
-		db = self.persistence_adapter
+		persistence = self.persistence_adapter
 
-		targetfile = db.targetfile_for_symlink(src)
+		targetfile = persistence.targetfile_for_symlink(src)
 		if targetfile:
-			db.unregister_link(targetfile, src)
-			db.register_link(targetfile, dest)
+			persistence.unregister_link(targetfile, src)
+			persistence.register_link(targetfile, dest)
 
+	def __reregister_target_file(self, src, dest):
+		persistence = self.persistence_adapter
 
-	def __reregister_targetfile(self, src, dest):
-		db = self.persistence_adapter
+		if persistence.contains_target_file(src):
+			persistence.reregister_target_file(src, dest)	# TODO standardize, targetfile or target_file
 
-		if db.contains_target_file(src):
+		else:
 			pass
-			# TODO
 
 
 def _is_symlink(filepath):
-	return subprocess.run(['test', '-L', filepath]).returncode
+	return os.path.islink(filepath)

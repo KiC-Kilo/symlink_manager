@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 
 from persistence.jsonfile_adapter import JsonFileAdapter
 from services.mv_service import MvService
@@ -15,7 +16,8 @@ def main():
 	"""
 	configure_logging()
 
-	link_db_dir = '~/.symlink_manager/link_database' # TODO find a real home for this.
+	link_db_dir = os.path.join('/home/', os.environ['USER'],
+							   '.symlink_manager/link_database')	# TODO find a real home for this.
 	persistence_adapter = JsonFileAdapter(link_db_dir)
 
 	raw_command = parse_args()
@@ -40,6 +42,7 @@ def parse_args():
 	return parser.parse_args().command
 
 def configure_logging():
+	print('logging to ' + os.getcwd() + '/symlinkmanager.log')
 	logging.basicConfig(filename='symlink_manager.log', level=logging.DEBUG)
 
 if __name__ == '__main__':

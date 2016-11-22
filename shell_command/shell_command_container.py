@@ -7,12 +7,12 @@ class ShellCommand(metaclass=ABCMeta):
 
 	def __init__(self, command):
 		assert isinstance(command, list)
-		self._raw_command = command
+		self.raw_command = command
 
 
 	def full_command(self):
 		full_command = ''
-		for string in self._raw_command:
+		for string in self.raw_command:
 			full_command += string + ' '
 
 		return full_command
@@ -25,7 +25,8 @@ class ShellCommand(metaclass=ABCMeta):
 
 		return path
 
-	def __get_user_home_dir(self):
+	@staticmethod
+	def __get_user_home_dir():
 		result = subprocess.run('whoami',
 								stdout=subprocess.PIPE,
 								stderr=subprocess.PIPE,

@@ -8,9 +8,10 @@ from util.test_utils import file_content_equals_string
 
 
 class LnServiceTests(unittest.TestCase):
+
     def test_creates_symlink_with_valid_ln_command(self):
         # Arrange
-        persistence_adapter = AlwaysSuccessfulPersistenceAdapter()
+        persistence_adapter = AlwaysSuccessfulPersistenceAdapter('')
 
         link_source = self.dummy_file_full_path()
         link_target = os.path.join(self.test_dir.name, 'link')

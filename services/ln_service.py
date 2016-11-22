@@ -21,7 +21,7 @@ class LnService(CommandService):
             logging.info('Creating link at ' + ln_command.link_name + ' to file '
                   + ln_command.target_name)
 
-            ln_status = subprocess.run(self.ln_container._raw_command).returncode
+            ln_status = subprocess.run(self.ln_container.raw_command).returncode
 
             if ln_status != 0:
                 logging.error('Link creation failed.')

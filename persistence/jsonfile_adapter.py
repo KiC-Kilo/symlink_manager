@@ -1,37 +1,27 @@
+import copy
 import json
-import os
-import logging
-import time
 
 from persistence.persistence_adapter import PersistenceAdapter
 
 
-def transactional(function):
-	def decorated_function(*args):
-		pass
-
-	return decorated_function
-
 class JsonFileAdapter(PersistenceAdapter):
 
 	def __init__(self, ln_db_dir):
+		super().__init__(ln_db_dir)
+
 		db_file_name = 'symlink_db.json'
 		self._db_file_path = self._open_link_db(ln_db_dir, db_file_name)
 		self._db = self._load_json_content()
-		self.__LOCK_FILE = os.path.join(ln_db_dir, 'symlink_db.lock')
+		self._current_transaction = copy.deepcopy(self._db)
 
 	def contains_symlink(self, symlink_path):
-		return self.targetfile_for_link(symlink_path)
+		return self.target_file_for_link(symlink_path)
 
 	def contains_target_file(self, target_file_path):
-		self._db = self._load_json_content()
-		return self._db.__contains__(target_file_path)
+		return target_file_path in self._current_transaction
 
-	def register_link(self, ln_container, transactional=True):
-		if transactional:
-			db_dict = self._get_open_transaction()
-		else:
-			db_dict = self._db
+	def register_link(self, ln_container):
+		db_dict = self._current_transaction
 
 		try:
 			link    = ln_container.link_name
@@ -42,21 +32,16 @@ class JsonFileAdapter(PersistenceAdapter):
 			elif not link in db_dict[target]:
 				db_dict[target].append(link)
 
-			self._uncommitted_db = db_dict
-
-			return True
-
 		except Exception as e:
 			return False
 
-	def unregister_link(self, target_path, link_path, transactional=True):
-		if transactional:
-			db_dict = self._get_open_transaction()
-		else:
-			db_dict = self._db
+		return True
+
+	def unregister_link(self, target_path, link_path):
+		db_dict = self._current_transaction
 
 		try:
-			if not db_dict.__contains__(target_path):
+			if not target_path in db_dict:
 				raise Exception('No target `' + target_path +
 								'`found in link database.')
 
@@ -64,27 +49,37 @@ class JsonFileAdapter(PersistenceAdapter):
 				if link == link_path:
 					db_dict[target_path].remove(link)
 
-			return True
 		except Exception as e:
 			return False
 
-	def targetfile_for_link(self, link_path):
-		for targetfile in self._db:
+		return True
+
+	def target_file_for_link(self, link_path):
+		for targetfile in self._current_transaction:
 			for symlink in targetfile:
 				if symlink == link_path: return targetfile
 
 	def unregister_target(self, target_path):
 		try:
-			if self._db.__contains__(target_path):
-				self._db.pop(target_path)
+			if target_path in self._current_transaction:
+				self._current_transaction.pop(target_path)
 
-			return True
 		except Exception as e: return False
 
+		return True
+
+	def reregister_target_file(self, old_filepath, new_filepath):
+		for link in self._current_transaction[old_filepath]:
+			self.unregister_link(old_filepath, link)
+			self._register_link(link, new_filepath)
+
 	def commit(self):
-		if self._uncommitted_db:
-			self._db = self._uncommitted_db
-			self._save_json_content()
+		self._db = copy.deepcopy(self._current_transaction)
+		self._save_json_content()
+
+	def rollback(self):
+		self._current_transaction = copy.deepcopy(self._db)
+		self._save_json_content()
 
 	def _load_json_content(self):
 		try:
@@ -102,23 +97,12 @@ class JsonFileAdapter(PersistenceAdapter):
 		with open(self._db_file_path, mode='w') as db_file:
 			db_file.write(json.dumps(self._db, indent=4, separators=(',', ' : ')))
 
-	def _get_open_transaction(self):
-		if self._uncommitted_db:
-			db_dict = self._uncommitted_db
-		else:
-			db_dict = self._db.copy()
-		return db_dict
+	def _register_link(self, target, link):
+		db_dict = self._current_transaction
 
-	def _is_db_locked(self):
-		if os.path.isfile(self.__LOCK_FILE):
-			return True
-		else:
-			return False
+		if not target in db_dict:
+			db_dict[target] = link
+		elif not link in db_dict[target]:
+			db_dict[target].append(link)
 
-	def _lock_db(self):
-		while self._is_db_locked():
-			logging.debug('Waiting for database lock...')
-			time.sleep(0.25)
-
-		with open(self.__LOCK_FILE, mode='w'):
-			pass
+		return True
