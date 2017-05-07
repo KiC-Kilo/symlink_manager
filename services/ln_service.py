@@ -1,6 +1,7 @@
 import logging
 import subprocess
 
+from persistence.persistence_adapter import PersistenceAdapter
 from services.command_service import CommandService
 from shell_command.ln_container import LnCommand
 
@@ -10,7 +11,7 @@ class LnService(CommandService):
     Responsible for creating symbolic links and registering them with the given
     persistence adapter.
     """
-    def __init__(self, ln_command, persistence_adapter):
+    def __init__(self, ln_command: list, persistence_adapter: PersistenceAdapter):
         super().__init__(persistence_adapter)
         self.ln_container = LnCommand(ln_command)
 

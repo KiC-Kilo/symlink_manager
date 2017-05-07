@@ -2,11 +2,12 @@ import copy
 import json
 
 from persistence.persistence_adapter import PersistenceAdapter
+from shell_command.ln_container import LnCommand
 
 
 class JsonFileAdapter(PersistenceAdapter):
 
-	def __init__(self, ln_db_dir):
+	def __init__(self, ln_db_dir: str):
 		super().__init__(ln_db_dir)
 
 		db_file_name = 'symlink_db.json'
@@ -14,13 +15,13 @@ class JsonFileAdapter(PersistenceAdapter):
 		self._db = self._load_json_content()
 		self._current_transaction = copy.deepcopy(self._db)
 
-	def contains_symlink(self, symlink_path):
+	def contains_symlink(self, symlink_path: str):
 		return self.target_file_for_link(symlink_path)
 
-	def contains_target_file(self, target_file_path):
+	def contains_target_file(self, target_file_path: str):
 		return target_file_path in self._current_transaction
 
-	def register_link(self, ln_container):
+	def register_link(self, ln_container: LnCommand):
 		db_dict = self._current_transaction
 
 		try:
@@ -37,7 +38,7 @@ class JsonFileAdapter(PersistenceAdapter):
 
 		return True
 
-	def unregister_link(self, target_path, link_path):
+	def unregister_link(self, target_path: str, link_path: str):
 		db_dict = self._current_transaction
 
 		try:
@@ -54,12 +55,12 @@ class JsonFileAdapter(PersistenceAdapter):
 
 		return True
 
-	def target_file_for_link(self, link_path):
+	def target_file_for_link(self, link_path: str):
 		for targetfile in self._current_transaction:
 			for symlink in targetfile:
 				if symlink == link_path: return targetfile
 
-	def unregister_target(self, target_path):
+	def unregister_target(self, target_path: str):
 		try:
 			if target_path in self._current_transaction:
 				self._current_transaction.pop(target_path)
@@ -68,7 +69,7 @@ class JsonFileAdapter(PersistenceAdapter):
 
 		return True
 
-	def reregister_target_file(self, old_filepath, new_filepath):
+	def reregister_target_file(self, old_filepath: str, new_filepath: str):
 		for link in self._current_transaction[old_filepath]:
 			self.unregister_link(old_filepath, link)
 			self._register_link(link, new_filepath)
@@ -97,7 +98,7 @@ class JsonFileAdapter(PersistenceAdapter):
 		with open(self._db_file_path, mode='w') as db_file:
 			db_file.write(json.dumps(self._db, indent=4, separators=(',', ' : ')))
 
-	def _register_link(self, target, link):
+	def _register_link(self, target: str, link: str):
 		db_dict = self._current_transaction
 
 		if not target in db_dict:

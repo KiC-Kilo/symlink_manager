@@ -9,7 +9,10 @@ from services.ln_service import LnService
 
 def main():
 	"""
-	This implementation only supports form 1 of the ln command
+	This implementation only supports form 1 of the ln command as of GNU coreutils version 8.24.
+	Per the man pages:
+
+		ln [OPTION]... [-T] TARGET LINK_NAME
 
 	TODO support other forms.
 	:return:

@@ -3,7 +3,7 @@ from shell_command.shell_command_container import ShellCommand
 
 class LnCommand(ShellCommand):
 
-    def __init__(self, ln_command):
+    def __init__(self, ln_command: list):
         super().__init__(ln_command)
 
         if not (ln_command.__contains__('-s') or

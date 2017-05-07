@@ -10,7 +10,7 @@ class PersistenceAdapter(metaclass=ABCMeta):
 
 	def __init__(self, ln_db_dir):
 		self._instance_id = uuid.uuid4()
-		self._LOCK_FILE = os.path.join(ln_db_dir, 'lockfile')
+		self._LOCK_FILE = os.path.join(ln_db_dir, 'symlink_db.lock')
 
 	def _open_link_db(self, ln_db_dir, ln_db_filename):
 		if not os.path.exists(ln_db_dir):
