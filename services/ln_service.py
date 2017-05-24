@@ -32,5 +32,5 @@ class LnService(CommandService):
             else:
                 logging.info('Link created!')
         else:
-            logging.error('Could not register symlink in the database.')
+            logging.error('Persistence adapter could not register symlink.')
 

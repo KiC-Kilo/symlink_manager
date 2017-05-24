@@ -44,7 +44,7 @@ class JsonFileAdapter(PersistenceAdapter):
 		try:
 			if not target_path in db_dict:
 				raise Exception('No target `' + target_path +
-								'`found in link database.')
+								'`found in link data file.')
 
 			for link in db_dict[target_path]:
 				if link == link_path:
@@ -90,7 +90,7 @@ class JsonFileAdapter(PersistenceAdapter):
 				return json.load(db_file)
 
 		except ValueError as e:
-			# No json database exists.
+			# No json file exists.
 			# TODO this error could also be thrown if the JSON is invalid.
 			return dict()
 

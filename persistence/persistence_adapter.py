@@ -27,7 +27,7 @@ class PersistenceAdapter(metaclass=ABCMeta):
 
 	def _lock_db(self):
 		while self._is_db_locked():
-			logging.debug('Waiting for database lock (instance %s) ...', self._instance_id)
+			logging.debug('Waiting for data file lock (instance %s) ...', self._instance_id)
 			time.sleep(0.25)
 
 		with open(self._LOCK_FILE, mode='w') as lockfile:
@@ -38,7 +38,7 @@ class PersistenceAdapter(metaclass=ABCMeta):
 			# beat us to the punch; try to lock again.
 			self._lock_db()
 
-		logging.debug('Instance %s has database lock.', self._instance_id)
+		logging.debug('Instance %s has data file lock.', self._instance_id)
 
 	def _owns_lock(self):
 		if os.path.isfile(self._LOCK_FILE):

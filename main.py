@@ -14,13 +14,12 @@ def main():
 
 		ln [OPTION]... [-T] TARGET LINK_NAME
 
-	TODO support other forms.
 	:return:
 	"""
 	configure_logging()
 
 	link_db_dir = os.path.join('/home/', os.environ['USER'],
-							   '.symlink_manager/link_database')	# TODO find a real home for this.
+							   '.symlink_manager/link_data')	# TODO find a real home for this.
 	persistence_adapter = JsonFileAdapter(link_db_dir)
 
 	raw_command = parse_args()
@@ -28,16 +27,13 @@ def main():
 	if root_command == 'ln':
 		link_service = LnService(raw_command, persistence_adapter)
 		link_service.create_link()
-
 	elif root_command == 'mv':
 		move_service = MvService(raw_command, persistence_adapter)
 		move_service.execute_mv()
-
 	elif root_command == 'rm':
 		pass # TODO
-
 	else:
-		raise Exception('No arguments given') #todo use argparse for this
+		raise Exception('No arguments given') # TODO use argparse for this
 
 def parse_args():
 	parser = argparse.ArgumentParser()
