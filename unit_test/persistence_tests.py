@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import tempfile
 import unittest
@@ -13,7 +14,8 @@ class PersistenceAdapterTests(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(self):
-		configure_logging()
+		print(os.getcwd())
+		configure_logging(logging.DEBUG, 'symlink_manager.test.log')
 
 	def test_adds_new_file_keys(self):
 		# Arrange

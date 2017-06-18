@@ -6,8 +6,8 @@ from persistence.persistence_adapter import PersistenceAdapter
 
 class ShelveAdapter(PersistenceAdapter):
 
-    def __init__(self, ln_db_dir):
-        self.ln_db_file_path = self._open_link_db(ln_db_dir, 'symlink_db.shelve')
+    def __init__(self, link_db_dir):
+        self.ln_db_file_path = self._open_link_db(link_db_dir, 'symlink_db.shelve')
 
     def register_link(self, ln_container):
         try:

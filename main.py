@@ -1,5 +1,6 @@
 import argparse
 import logging
+import logging.config
 import os
 
 from persistence.jsonfile_adapter import JsonFileAdapter
@@ -9,14 +10,14 @@ from services.ln_service import LnService
 
 def main():
 	"""
-	This implementation only supports form 1 of the ln command as of GNU coreutils version 8.24.
-	Per the man pages:
+	This implementation only supports form 1 of the ln command as of GNU coreutils version
+	8.24.  Per the man pages:
 
 		ln [OPTION]... [-T] TARGET LINK_NAME
 
 	:return:
 	"""
-	configure_logging()
+	configure_logging(logging.DEBUG, 'symlink_manager.log')
 
 	link_db_dir = os.path.join('/home/', os.environ['USER'],
 							   '.symlink_manager/link_data')	# TODO find a real home for this.
@@ -35,14 +36,16 @@ def main():
 	else:
 		raise Exception('No arguments given') # TODO use argparse for this
 
+
 def parse_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('command', nargs=argparse.REMAINDER)
 	return parser.parse_args().command
 
-def configure_logging():
-	print('logging to ' + os.getcwd() + '/symlinkmanager.log')
-	logging.basicConfig(filename='symlink_manager.log', level=logging.DEBUG)
+
+def configure_logging(level, filename):
+	logging.config.fileConfig('../config/logging.conf')
+
 
 if __name__ == '__main__':
 	main()
