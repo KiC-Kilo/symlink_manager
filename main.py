@@ -17,7 +17,7 @@ def main():
 
 	:return:
 	"""
-	configure_logging(logging.DEBUG, 'symlink_manager.log')
+	configure_logging(logging.DEBUG, 'log/symlink_manager.log')
 
 	link_db_dir = os.path.join('/home/', os.environ['USER'],
 							   '.symlink_manager/link_data')	# TODO find a real home for this.

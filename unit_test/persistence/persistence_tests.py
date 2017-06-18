@@ -10,7 +10,7 @@ from persistence.jsonfile_adapter import JsonFileAdapter
 from shell_command.ln_container import LnCommand
 
 
-class PersistenceAdapterTests(unittest.TestCase):
+class JsonFileAdapterTests(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(self):
@@ -25,7 +25,6 @@ class PersistenceAdapterTests(unittest.TestCase):
 
 		# Act
 		json_adapter.register_link(ln_container)
-		json_adapter.commit()
 
 		# Assert
 		db_content = self.load_json_content(json_adapter)
@@ -44,7 +43,6 @@ class PersistenceAdapterTests(unittest.TestCase):
 		# Act
 		json_adapter.register_link(ln_container_1)
 		json_adapter.register_link(ln_container_2)
-		json_adapter.commit()
 
 		# Assert
 		db_content = self.load_json_content(json_adapter)
@@ -54,7 +52,8 @@ class PersistenceAdapterTests(unittest.TestCase):
 		link_1 = os.path.join(os.getcwd(), 'LINK_NAME_1')
 		link_2 = os.path.join(os.getcwd(), 'LINK_NAME_2')
 		assert(link_1 in target and
-			   link_2 in target and len(target) == 2)
+			   link_2 in target and
+               len(target) == 2)
 
 		pass
 
@@ -72,12 +71,10 @@ class PersistenceAdapterTests(unittest.TestCase):
 		json_adapter.register_link(ln_command_1)
 		json_adapter.register_link(ln_command_2)
 		json_adapter.register_link(ln_command_3)
-		json_adapter.commit()
 
 		# Act
 		json_adapter.unregister_link(ln_command_2.target_name,
 									 ln_command_2.link_name)
-		json_adapter.commit()
 
 		# Assert
 		db_content = self.load_json_content(json_adapter)
