@@ -1,4 +1,4 @@
-from persistence.persistence_adapter import PersistenceAdapter
+from symmv.persistence.persistence_adapter import PersistenceAdapter
 
 
 class AlwaysSuccessfulPersistenceAdapter(PersistenceAdapter):

@@ -4,9 +4,9 @@ import logging
 import copy
 import os
 
-from persistence.persistence_adapter import PersistenceAdapter
-from persistence.persistence_adapter import transaction
-from shell_command.ln_container import LnCommand
+from symmv.persistence.persistence_adapter import PersistenceAdapter
+from symmv.persistence.persistence_adapter import transaction
+from symmv.shell_command.ln_container import LnCommand
 
 
 class JsonFileAdapter(PersistenceAdapter):

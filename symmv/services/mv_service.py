@@ -1,10 +1,11 @@
 import logging
-import os
 import subprocess
 
-from persistence.persistence_adapter import PersistenceAdapter
-from services.command_service import CommandService
-from shell_command.mv_container import MvCommand
+import os
+
+from symmv.persistence.persistence_adapter import PersistenceAdapter
+from symmv.services.command_service import CommandService
+from symmv.shell_command.mv_container import MvCommand
 
 
 class MvService(CommandService):

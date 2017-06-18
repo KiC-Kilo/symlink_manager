@@ -1,7 +1,6 @@
-import os
 import shelve
 
-from persistence.persistence_adapter import PersistenceAdapter
+from symmv.persistence.persistence_adapter import PersistenceAdapter
 
 
 class ShelveAdapter(PersistenceAdapter):

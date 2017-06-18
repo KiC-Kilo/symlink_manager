@@ -1,10 +1,11 @@
-import os
-import tempfile
 import unittest
 
-from services.ln_service import LnService
-from unit_test.stubs.persistence_adapter import AlwaysSuccessfulPersistenceAdapter
-from util.test_utils import file_content_equals_string
+import os
+import tempfile
+
+from symmv.services.ln_service import LnService
+from symmv.unit_test.stubs.persistence_adapter import AlwaysSuccessfulPersistenceAdapter
+from symmv.unit_test.util.test_utils import file_content_equals_string
 
 
 class LnServiceTests(unittest.TestCase):

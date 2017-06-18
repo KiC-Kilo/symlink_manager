@@ -1,9 +1,9 @@
 import logging
 import subprocess
 
-from persistence.persistence_adapter import PersistenceAdapter
-from services.command_service import CommandService
-from shell_command.rm_container import RmCommand
+from symmv.persistence.persistence_adapter import PersistenceAdapter
+from symmv.services.command_service import CommandService
+from symmv.shell_command.rm_container import RmCommand
 
 
 class RmService(CommandService):

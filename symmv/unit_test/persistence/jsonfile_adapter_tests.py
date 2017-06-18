@@ -1,13 +1,14 @@
 import json
 import logging
-import os
-import tempfile
 import unittest
 import uuid
 
-from main import configure_logging
-from persistence.jsonfile_adapter import JsonFileAdapter
-from shell_command.ln_container import LnCommand
+import os
+import tempfile
+
+from symmv.main import configure_logging
+from symmv.persistence.jsonfile_adapter import JsonFileAdapter
+from symmv.shell_command.ln_container import LnCommand
 
 
 class JsonFileAdapterTests(unittest.TestCase):

@@ -1,11 +1,12 @@
 import argparse
 import logging
 import logging.config
+
 import os
 
-from persistence.jsonfile_adapter import JsonFileAdapter
-from services.mv_service import MvService
-from services.ln_service import LnService
+from symmv.persistence.jsonfile_adapter import JsonFileAdapter
+from symmv.services.ln_service import LnService
+from symmv.services.mv_service import MvService
 
 
 def main():

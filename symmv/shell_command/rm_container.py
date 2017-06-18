@@ -1,4 +1,4 @@
-from shell_command.shell_command_container import ShellCommand
+from symmv.shell_command.shell_command_container import ShellCommand
 
 
 class RmCommand(ShellCommand):
