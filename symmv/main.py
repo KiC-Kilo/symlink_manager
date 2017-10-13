@@ -45,8 +45,31 @@ def parse_args():
 
 
 def configure_logging(level, filename):
-	logging.config.fileConfig('../config/logging.conf')
-
+	logging.config.dictConfig(
+		{
+			'version' : 1,
+			'handlers' : {
+				'console' : {
+					'class' : 'logging.StreamHandler',
+					'formatter' : 'default',
+					'level' : 'DEBUG',
+					'stream' : 'ext://sys.stdout'
+				},
+				'file' : {
+					'class' : 'logging.handlers.RotatingFileHandler',
+					'formatter': 'default',
+					'filename' : '/home/kmcvay/tmp/symmv.log',
+					'maxBytes' : 4096,
+					'backupCount' : 3
+				}
+			},
+			'formatters' : {
+				'default' : {
+					'format' : '%(asctime)s | %(levelname)s | %(message)s'
+				}
+			}
+		}
+	)
 
 if __name__ == '__main__':
 	main()

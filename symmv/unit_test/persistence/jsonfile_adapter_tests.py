@@ -15,7 +15,7 @@ class JsonFileAdapterTests(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(self):
-		print(os.getcwd())
+		logging.debug(os.getcwd())
 		configure_logging(logging.DEBUG, 'symlink_manager.test.log')
 
 	def test_adds_new_file_keys(self):
