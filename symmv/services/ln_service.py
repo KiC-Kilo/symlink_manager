@@ -1,5 +1,6 @@
-import logging
 import subprocess
+
+from symmv.logging import logger
 
 from symmv.persistence.persistence_adapter import PersistenceAdapter
 from symmv.services.command_service import CommandService
@@ -19,18 +20,18 @@ class LnService(CommandService):
     def create_link(self):
         ln_command = self.ln_container
         if not self.persistence_adapter.register_link(ln_command):
-            logging.info('Creating link at ' + ln_command.link_name + ' to file '
+            logger.info('Creating link at ' + ln_command.link_name + ' to file '
                   + ln_command.target_name)
 
             ln_status = subprocess.run(self.ln_container.raw_command).returncode
 
             if ln_status != 0:
-                logging.error('Link creation failed.')
+                logger.error('Link creation failed.')
                 self.persistence_adapter.unregister_link(
                     self.ln_container.target_name,
                     self.ln_container.link_name)
             else:
-                logging.info('Link created!')
+                logger.info('Link created!')
         else:
-            logging.error('Persistence adapter could not register symlink.')
+            logger.error('Persistence adapter could not register symlink.')
 

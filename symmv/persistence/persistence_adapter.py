@@ -1,11 +1,10 @@
-import logging
-
 import copy
 import os
 import time
 import uuid
 from abc import ABCMeta
 from abc import abstractmethod
+from symmv.logging import logger
 
 
 def transaction(fn):
@@ -52,7 +51,7 @@ class PersistenceAdapter(metaclass=ABCMeta):
 
     def _lock_db(self):
         while self._is_db_locked():
-            logging.debug('Waiting for data file lock (instance %s)', self._instance_id)
+            logger.debug('Waiting for data file lock (instance %s)', self._instance_id)
             time.sleep(0.25)
 
         with open(self._LOCK_FILE_NAME, mode='w') as lockfile:
@@ -63,7 +62,7 @@ class PersistenceAdapter(metaclass=ABCMeta):
             # beat us to the punch; try to lock again.
             self._lock_db()
 
-        logging.debug('Instance %s has data file lock.', self._instance_id)
+        logger.debug('Instance %s has data file lock.', self._instance_id)
 
 
     def _this_instance_owns_lock(self):

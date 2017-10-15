@@ -1,7 +1,7 @@
-import logging
 import subprocess
 
 import os
+from symmv.logging import logger
 
 from symmv.persistence.persistence_adapter import PersistenceAdapter
 from symmv.services.command_service import CommandService
@@ -31,7 +31,7 @@ class MvService(CommandService):
 								   universal_newlines=True,
 								   shell=True)
 		if mv_result.returncode:
-			logging.error('Error moving file: ' + mv_result.stderr)
+			logger.error('Error moving file: ' + mv_result.stderr)
 			self.persistence_adapter.rollback()
 		else:
 			self.persistence_adapter.commit()

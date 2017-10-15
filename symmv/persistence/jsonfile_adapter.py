@@ -4,6 +4,7 @@ import logging
 import copy
 import os
 
+from symmv.logging import logger
 from symmv.persistence.persistence_adapter import PersistenceAdapter
 from symmv.persistence.persistence_adapter import transaction
 from symmv.shell_command.ln_container import LnCommand
@@ -25,7 +26,7 @@ class JsonFileAdapter(PersistenceAdapter):
             target  = ln_container.target_name
             self._register_link(target, link)
         except Exception as e:
-            logging.error(str(e))
+            logger.error(str(e))
             return False
         return True
 
@@ -82,6 +83,7 @@ class JsonFileAdapter(PersistenceAdapter):
 
 
     def _open_link_db(self, link_db_dir, ln_db_filename):
+        logger.debug("Opening link DB: " + link_db_dir + ln_db_filename)
         if not os.path.exists(link_db_dir):
             os.makedirs(link_db_dir)
 

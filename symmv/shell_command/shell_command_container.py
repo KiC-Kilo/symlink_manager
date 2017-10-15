@@ -37,6 +37,7 @@ class ShellCommand(metaclass=ABCMeta):
 								stderr=subprocess.PIPE,
 								shell=True,
 								universal_newlines=True)
+
 		err = result.stderr
 		if err:
 			raise Exception('Error resolving home directory for current user: ' + err)

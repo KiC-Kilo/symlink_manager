@@ -1,12 +1,11 @@
 import json
-import logging
 import unittest
 import uuid
 
 import os
 import tempfile
+from symmv.logging import logger
 
-from symmv.main import configure_logging
 from symmv.persistence.jsonfile_adapter import JsonFileAdapter
 from symmv.shell_command.ln_container import LnCommand
 
@@ -15,8 +14,7 @@ class JsonFileAdapterTests(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(self):
-		logging.debug(os.getcwd())
-		configure_logging(logging.DEBUG, 'symlink_manager.test.log')
+		logger.debug(os.getcwd())
 
 	def test_adds_new_file_keys(self):
 		# Arrange

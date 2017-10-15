@@ -1,5 +1,6 @@
-import logging
 import subprocess
+
+from symmv.logging import logger
 
 from symmv.persistence.persistence_adapter import PersistenceAdapter
 from symmv.services.command_service import CommandService
@@ -19,9 +20,9 @@ class RmService(CommandService):
 		try:
 			rm_command = self.rm_container
 
-			logging.info('Attempting to unregister all links for file...')
+			logger.info('Attempting to unregister all links for file...')
 			if self.persistence_adapter.unregister_target(rm_command.target):
-				logging.info('File unregistered.')
+				logger.info('File unregistered.')
 
 			rm_result = subprocess.run(rm_command.raw_command.split(),
 									   stderr=subprocess.PIPE,
@@ -29,7 +30,7 @@ class RmService(CommandService):
 									   shell=True)
 
 			if rm_result.returncode != 0:
-				logging.error('Error moving file: ' + rm_result.stderr)
+				logger.error('Error moving file: ' + rm_result.stderr)
 				self.persistence_adapter.rollback()
 				return False
 			else:
@@ -44,9 +45,9 @@ def remove_link(self):
 	try:
 		rm_command = self.rm_container
 
-		logging.info('Attempting to unregister link...')
+		logger.info('Attempting to unregister link...')
 		if self.persistence_adapter.unregister_target(rm_command.target):
-			logging.info('Link unregistered.')
+			logger.info('Link unregistered.')
 
 			rm_result = subprocess.run(rm_command.raw_command.split(),
 									   stderr=subprocess.PIPE,
@@ -54,7 +55,7 @@ def remove_link(self):
 									   shell=True)
 
 			if rm_result.returncode != 0:
-				logging.error('Error moving file: ' + rm_result.stderr)
+				logger.error('Error moving file: ' + rm_result.stderr)
 				self.persistence_adapter.rollback()
 				return False
 			else:
