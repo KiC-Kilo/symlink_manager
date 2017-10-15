@@ -2,6 +2,7 @@ import copy
 import os
 import time
 import uuid
+
 from abc import ABCMeta
 from abc import abstractmethod
 from symmv.logging import logger
@@ -12,31 +13,37 @@ def transaction(fn):
     A decorator to be used for all transactional functions.  The rationale behind making
     functions transactional rather than making entire calls to the main program
     transactional is that, while not currently implemented, at some point the program may
-    ask for user input (e.g. to confirm overwriting a file).  If this were to happen, it
-    would lock the symlink database for all other instances of the program.
-    
+    ask for user input (e.g. to confirm overwriting a file).  If this were to happen
+    without transactions at the function level, it would lock the symlink database for all
+    other instances of the program while waiting for input.  With function-level
+    transactions, we can end the transaction while waiting on user input and without
+    terminating the program or blocking other instances.
+
     :param fn:  The function to be decorated with a transaction.
     :return:    Returns a transactional version of the given function.
     """
     def transactional_fn(self, *args):
-        self._lock_db()
-        self._db = self._load_link_data()
-        self._current_transaction = copy.deepcopy(self._db)
         try:
+            self._lock_db()
+            self._db = self._load_link_data()
+            self._current_transaction = copy.deepcopy(self._db)
             fn(self, *args)
             self.commit()
         except Exception as e:
-            # TODO log error
+            logger.error("Error in transaction:")
+            logger.error(str(e))
             self.rollback()
-            pass
-        self._unlock_db()
+            return False
+        finally:
+            self._unlock_db()
         # Ensure that we can't reuse the link data outside this transaction
         self._current_transaction, self._db = None, None
+        return True
 
     return transactional_fn
 
-class PersistenceAdapter(metaclass=ABCMeta):
 
+class PersistenceAdapter(metaclass=ABCMeta):
     _LOCK_FILE_NAME = 'symlink_db.lock'
 
     def __init__(self, link_db_dir):

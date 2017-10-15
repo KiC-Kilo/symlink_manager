@@ -19,7 +19,7 @@ class LnService(CommandService):
 
     def create_link(self):
         ln_command = self.ln_container
-        if not self.persistence_adapter.register_link(ln_command):
+        if self.persistence_adapter.register_link(ln_command):
             logger.info('Creating link at ' + ln_command.link_name + ' to file '
                   + ln_command.target_name)
 
