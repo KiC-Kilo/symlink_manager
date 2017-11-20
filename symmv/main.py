@@ -1,8 +1,6 @@
 import argparse
-
 import os
 
-from symmv.logging import logger
 from symmv.persistence.jsonfile_adapter import JsonFileAdapter
 from symmv.services.ln_service import LnService
 from symmv.services.mv_service import MvService
@@ -32,7 +30,7 @@ def main():
     elif root_command == 'rm':
         pass # TODO
     else:
-        raise Exception('No arguments given') # TODO use argparse for this
+        raise Exception('No arguments given')
 
 
 def parse_args():
