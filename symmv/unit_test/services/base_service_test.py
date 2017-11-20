@@ -1,8 +1,10 @@
+import unittest
+
 import os
 import tempfile
 
 
-class BaseServiceTest(object):
+class BaseServiceTest(unittest.TestCase):
     def setUp(self):
         self.data_dir = tempfile.TemporaryDirectory()
         self.test_dir = tempfile.TemporaryDirectory()

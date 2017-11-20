@@ -11,7 +11,7 @@ from symmv.unit_test.services.base_service_test import BaseServiceTest
 from symmv.unit_test.stubs.persistence_adapter import AlwaysSuccessfulPersistenceAdapter
 
 
-class LnServiceTests(BaseServiceTest, unittest.TestCase):
+class LnServiceTests(BaseServiceTest):
 
     def test_creates_symlink_with_valid_ln_command(self):
         # Arrange
@@ -31,7 +31,7 @@ class LnServiceTests(BaseServiceTest, unittest.TestCase):
             link_target, dummy_file_content))
 
 
-class MvServiceTests(BaseServiceTest, unittest.TestCase):
+class MvServiceTests(BaseServiceTest):
     def test_updates_link_when_moving_link(self):
         # Arrange
         link_source = self.dummy_file_full_path()
@@ -52,6 +52,10 @@ class MvServiceTests(BaseServiceTest, unittest.TestCase):
         assert(BaseServiceTest.file_content_equals_string(
             link_target + '_moved', 'foo'
         ))
+
+
+class RmServiceTests(BaseServiceTest):
+    pass
 
 if __name__ == '__main__':
     unittest.main()
