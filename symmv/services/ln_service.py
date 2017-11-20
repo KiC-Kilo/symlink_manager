@@ -19,11 +19,13 @@ class LnService(CommandService):
 
     def create_link(self):
         ln_command = self.ln_container
-        if self.persistence_adapter.register_link(ln_command):
+        saved = self.persistence_adapter\
+            .register_link(ln_command.target_name, ln_command.link_name)
+        if saved:
             logger.info('Creating link at ' + ln_command.link_name + ' to file '
                   + ln_command.target_name)
 
-            ln_status = subprocess.run(self.ln_container.raw_command).returncode
+            ln_status = subprocess.run(self.ln_container.raw_command()).returncode
 
             if ln_status != 0:
                 logger.error('Link creation failed.')

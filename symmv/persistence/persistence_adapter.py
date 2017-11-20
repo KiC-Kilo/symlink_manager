@@ -87,7 +87,7 @@ class PersistenceAdapter(metaclass=ABCMeta):
 
 
     @abstractmethod
-    def register_link(self, ln_container):
+    def register_link(self, target_path, link_path):
         raise NotImplemented
 
     @abstractmethod
@@ -107,11 +107,11 @@ class PersistenceAdapter(metaclass=ABCMeta):
         raise NotImplemented
 
     @abstractmethod
-    def target_file_for_link(self, symlink_path):
+    def reregister_target_file(self, old_filepath, new_filepath):
         raise NotImplemented
 
     @abstractmethod
-    def reregister_target_file(self, old_filepath, new_filepath):
+    def reregister_link(self, old_link_path, new_link_path):
         raise NotImplemented
 
     @abstractmethod

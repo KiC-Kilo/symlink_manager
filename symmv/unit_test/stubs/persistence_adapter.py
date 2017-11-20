@@ -12,7 +12,7 @@ class AlwaysSuccessfulPersistenceAdapter(PersistenceAdapter):
     def reregister_target_file(self, old_filepath, new_filepath):
         return True
 
-    def target_file_for_link(self, symlink_path):
+    def reregister_link(self, old_link_path, new_link_path):
         return True
 
     def contains_symlink(self, symlink_path):
@@ -24,8 +24,14 @@ class AlwaysSuccessfulPersistenceAdapter(PersistenceAdapter):
     def unregister_target(self, file_path):
         return True
 
-    def register_link(self, ln_container):
+    def register_link(self, target_path, link_path):
         return True
 
     def unregister_link(self, target_path, link_path):
+        return True
+
+    def _load_link_data(self):
+        return True
+
+    def _save_link_data(self, data):
         return True

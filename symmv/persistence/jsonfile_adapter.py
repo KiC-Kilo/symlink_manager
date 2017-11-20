@@ -6,7 +6,6 @@ import os
 from symmv.logging import logger
 from symmv.persistence.persistence_adapter import PersistenceAdapter
 from symmv.persistence.persistence_adapter import transaction
-from symmv.shell_command.ln_container import LnCommand
 
 
 class JsonFileAdapter(PersistenceAdapter):
@@ -19,11 +18,9 @@ class JsonFileAdapter(PersistenceAdapter):
 
 
     @transaction
-    def register_link(self, ln_container: LnCommand):
+    def register_link(self, target_path: str, link_path: str):
         try:
-            link    = ln_container.link_name
-            target  = ln_container.target_name
-            self._register_link(target, link)
+            self._register_link(target_path, link_path)
         except Exception as e:
             logger.error(str(e))
             return False
@@ -32,26 +29,12 @@ class JsonFileAdapter(PersistenceAdapter):
 
     @transaction
     def unregister_link(self, target_path: str, link_path: str):
-        db_dict = self._current_transaction
-
-        try:
-            if not target_path in db_dict:
-                raise Exception('No target `' + target_path +
-                                '`found in link data file.')
-
-            for link in db_dict[target_path]:
-                if link == link_path:
-                    db_dict[target_path].remove(link)
-
-        except Exception as e:
-            return False
-
-        return True
+        self._unregister_link(target_path, link_path)
 
 
-    def target_file_for_link(self, link_path: str):
+    def _target_file_for_link(self, link_path: str):
         for targetfile in self._current_transaction:
-            for symlink in targetfile:
+            for symlink in self._current_transaction[targetfile]:
                 if symlink == link_path: return targetfile
 
 
@@ -60,17 +43,22 @@ class JsonFileAdapter(PersistenceAdapter):
         try:
             if target_path in self._current_transaction:
                 self._current_transaction.pop(target_path)
-
         except Exception as e: return False
-
         return True
 
 
     @transaction
     def reregister_target_file(self, old_filepath: str, new_filepath: str):
         for link in self._current_transaction[old_filepath]:
-            self.unregister_link(old_filepath, link)
+            self._unregister_link(old_filepath, link)
             self._register_link(link, new_filepath)
+
+
+    @transaction
+    def reregister_link(self, old_link_path: str, new_link_path: str):
+        target_path = self._target_file_for_link(old_link_path)
+        self._unregister_link(target_path, old_link_path)
+        self._register_link(target_path, new_link_path)
 
 
     def commit(self):
@@ -121,11 +109,29 @@ class JsonFileAdapter(PersistenceAdapter):
 
         return True
 
+
+    def _unregister_link(self, target_path: str, link_path: str):
+        db_dict = self._current_transaction
+        try:
+            if not target_path in db_dict:
+                raise Exception('No target `' + target_path +
+                                '`found in link data file.')
+
+            for link in db_dict[target_path]:
+                if link == link_path:
+                    db_dict[target_path].remove(link)
+
+        except Exception as e:
+            return False
+        return True
+
+
     def contains_symlink(self, symlink_path):
         for key in self._current_transaction:
             if symlink_path in self._current_transaction[key]:
                 return True
         return False
+
 
     def contains_target_file(self, target_path):
         return target_path in self._current_transaction
